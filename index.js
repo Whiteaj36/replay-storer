@@ -33,7 +33,3 @@ client.on("message", message => {
 })
 })
 .catch(err => console.log('error', err))
-
-
-
-client.login("MjEzODE2NTY2ODg4OTIzMTM3.XRPf1A.dJXHUxpIWSDUneJ6520EkHTKDMo");
