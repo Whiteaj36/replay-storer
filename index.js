@@ -1,35 +1,49 @@
-const Discord = require("discord.js");
-const fetch = require('node-fetch')
-const fs = require('fs')
-const client = new Discord.Client();
+'use strict'
 
+const Discord = require('discord.js')
+const AWS = require('aws-sdk')
+const stream = require('stream')
+const fetch = require('node-fetch')
+const get = require('lodash.get')
+
+const client = new Discord.Client()
+const config = require('./config.json')
+const { Upload } = require('./db/models')
 
 const getMatchApi = 'https://api.opendota.com/api/matches/'
-const replayId = '5114579255'
 
-client.once("ready", () => {
-  console.log("Ready!");
-});
+const awsS3 = new AWS.S3()
 
-client.on("message", message => {
-  if (message.content.startsWith("!replay")) {
-    const messageContent = message.content.slice("!replay".length).split(/ +/);
-    const replayId = messageContent.join(" ")
+function uploadFromStream(s3, key) {
+  const pass = new stream.PassThrough()
+
+  const params = { Bucket: config.bucket, Key: key, Body: pass }
+  s3.upload(params, function s3Response() {})
+
+  return pass
+}
+
+client.on('message', message => {
+  if (message.content.startsWith('!replay')) {
+    const messageContent = message.content.slice('!replay'.length).split(/ +/)
+    const discordUser = message.author.username
+    const replayId = messageContent.join(' ')
     const replayApiCall = `${getMatchApi}${replayId}`
-    fetch(replayApiCall, { headers: { 'content-type': 'application/json; charset=UTF-8'}})
-    .then((data) => {
-      return data.json()
-      .then((res) => {
-        const replay_url = res.replay_url
-        memUsedBefore = process.memoryUsage().heapUsed / 1024 / 1024;
-        console.log(`Before: ${memUsedBefore}MB`)
-        return fetch(replay_url)
-        .then((res) => {
-            const writeStream = fs.createWriteStream(`./${replayId}.dem.bz2`)
-            res.body.pipe(writeStream)
+    fetch(replayApiCall, {
+      headers: { 'content-type': 'application/json; charset=UTF-8' }
+    }).then(data => {
+      return data.json().then(openDotaJson => {
+        const replayUrl = get(openDotaJson, 'replay_url')
+        return fetch(replayUrl).then(res => {
+          const key = `${replayId}.dem.bz2`
+          res.body.pipe(uploadFromStream(awsS3, key))
+          return Upload.create({ key, discordUser }).then(() => {
+            message.react('👍')
+          })
+        })
       })
     })
   }
 })
-})
-.catch(err => console.log('error', err))
+
+client.login(config.discordClientSecret)
