@@ -16,7 +16,20 @@ module.exports = (sequelize, DataTypes) => {
         unique: true
       },
       discordUser: {
+        field: 'discord_user',
         type: DataTypes.STRING
+      },
+      createdAt: {
+        field: 'created_at',
+        type: DataTypes.DATE
+      },
+      updatedAt: {
+        field: 'updated_at',
+        type: DataTypes.DATE
+      },
+      deletedAt: {
+        field: 'deleted_at',
+        type: DataTypes.DATE
       }
     },
     { tableName: 'uploads', paranoid: true }

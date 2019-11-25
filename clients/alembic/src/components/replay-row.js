@@ -1,4 +1,5 @@
 import React from 'react'
+import moment from 'moment'
 
 function ReplayRow({ replay }) {
   return (
@@ -9,8 +10,10 @@ function ReplayRow({ replay }) {
         'align-items': 'center'
       }}
     >
-      <div style={{ margin: '8px', width: '30%' }}>{replay.matchId}</div>
-      <div style={{ margin: '8px', width: '35%' }}>{replay.submissionDate}</div>
+      <div style={{ margin: '8px', width: '30%' }}>{replay.key}</div>
+      <div style={{ margin: '8px', width: '35%' }}>
+        {moment(replay.createdAt).format('MM/DD/YYYY')}
+      </div>
       <div style={{ margin: '8px', width: '35%' }}>{replay.discordUser}</div>
     </div>
   )

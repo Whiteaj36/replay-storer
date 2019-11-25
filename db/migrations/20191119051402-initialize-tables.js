@@ -12,11 +12,14 @@ module.exports = {
     return queryInterface.createTable('uploads', {
       id: { type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true },
       key: { type: Sequelize.STRING },
-      discordUser: { type: Sequelize.STRING, allowNull: true },
-      createdAt: {
+      discord_user: { type: Sequelize.STRING, allowNull: true },
+      created_at: {
         type: Sequelize.DATE
       },
-      updatedAt: {
+      updated_at: {
+        type: Sequelize.DATE
+      },
+      deleted_at: {
         type: Sequelize.DATE
       }
     })
