@@ -5,6 +5,7 @@ const AWS = require('aws-sdk')
 const stream = require('stream')
 const fetch = require('node-fetch')
 const get = require('lodash.get')
+require('dotenv').config()
 
 const client = new Discord.Client()
 const config = require('./config.json')
@@ -37,6 +38,7 @@ client.on('message', message => {
         return fetch(replayUrl).then(res => {
           const key = `${replayId}.dem.bz2`
           res.body.pipe(uploadFromStream(awsS3, key))
+          console.log(discordUser)
           return Upload.create({ key, discordUser }).then(() => {
             message.react('👍')
           })
