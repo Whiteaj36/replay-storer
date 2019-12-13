@@ -1,5 +1,8 @@
 'use strict'
 
+const ENV = process.env.ENVIRONMENT || 'dev'
+require('dotenv').config({ path: `./.env.${ENV}` })
+
 const express = require('express')
 const cors = require('cors')
 const { Upload } = require('../db/models')
