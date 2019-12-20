@@ -10,7 +10,7 @@ class App extends React.Component {
   }
 
   async componentDidMount() {
-    const res = await fetch('http://localhost:3000/getReplays')
+    const res = await fetch('http://api.alchemistsproject.com:8080/getReplays')
     const jsonResponse = await res.json()
     this.setState({ replays: jsonResponse })
   }
