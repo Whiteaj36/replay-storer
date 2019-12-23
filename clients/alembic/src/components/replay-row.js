@@ -5,6 +5,12 @@ function createS3Link(key) {
   return `https://dota-alchemy-replays.s3.us-east-2.amazonaws.com/${key}`
 }
 
+function deleteReplay(replayKey) {
+  return fetch(`https://api.alchemistsproject.com/deleteReplay/${replayKey}`, {
+    method: 'DELETE'
+  })
+}
+
 function ReplayRow({ replay }) {
   return (
     <div
@@ -23,6 +29,13 @@ function ReplayRow({ replay }) {
         {moment(replay.createdAt).format('MM/DD/YYYY')}
       </div>
       <div style={{ margin: '8px', width: '35%' }}>{replay.discordUser}</div>
+      <div
+        onClick={() => {
+          return deleteReplay(replay.id)
+        }}
+      >
+        Delete me
+      </div>
     </div>
   )
 }

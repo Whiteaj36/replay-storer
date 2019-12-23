@@ -15,6 +15,7 @@ const { Upload } = require('./db/models')
 
 const getMatchApi = 'https://api.opendota.com/api/matches/'
 
+AWS.config.loadFromPath('./config.json')
 const awsS3 = new AWS.S3()
 
 function uploadFromStream(s3, key) {
